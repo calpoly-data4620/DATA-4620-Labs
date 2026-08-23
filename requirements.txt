@@ -1,0 +1,12 @@
+torch
+torchvision
+numpy
+matplotlib
+imageio
+scikit-image>=0.25
+scikit-learn
+ipywidgets
+ipykernel
+palmerpenguins
+mlxtend
+ucimlrepo
