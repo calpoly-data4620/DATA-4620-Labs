@@ -30,14 +30,53 @@ As a shorthand, I will write both the gradient and the Jacobian using the partia
 
 ### Generalized chain rule 
 
-By simply multiplying Jacobian matrices together, we can apply the generalized chain rule to compute derivatives with respect to inner variables:
+The generalized chain rule applies when computing partial derivatives of vector-valued functions:
 
-$$\vec{z} = f(\vec{h})$$
-$$\vec{h} = g(\vec{x})$$
-$$\frac{\partial{\vec{z}}}{\partial{\vec{x}}} = 
-\frac{\partial{\vec{z}}}{\partial{\vec{h}}}
-\frac{\partial{\vec{h}}}{\partial{\vec{x}}}
-$$.
+$$L = L(f_1(x),f_2(x),\ldots,f_m(x))$$
+
+$$\frac{\partial L}{\partial x} = \sum_{i=1}^m \frac{\partial L}{\partial f_i}\frac{\partial f_i}{\partial x}$$
+
+When $\vec{x}$ is a $n \times 1$ vector, we have
+
+$$L = L(f_1(\vec{x}),f_2(\vec{x}),\ldots,f_m(\vec{x}))$$
+
+
+$$\frac{\partial L}{\partial x_j} = \sum_{i=1}^m \frac{\partial L}{\partial f_i}\frac{\partial f_i}{\partial x_j}$$
+
+$$=
+\begin{bmatrix}
+\frac{\partial L}{\partial f_1} & \cdots & \frac{\partial L}{\partial f_m}
+\end{bmatrix}
+\begin{bmatrix}
+\frac{\partial f_1}{\partial x_j} \\ \vdots \\ \frac{\partial f_m}{\partial x_j}
+\end{bmatrix}
+$$
+
+$$
+=
+\frac{\partial L}{\partial f} 
+\frac{\partial f}{\partial x_j}.
+$$
+
+Now we see that we can write the entire outer Jacobian matrix calculation as a multiplication of the inner Jacobians which implements the generalized chain rule:
+
+$$\frac{\partial L}{\partial \vec{x}} 
+= 
+\begin{bmatrix}
+\frac{\partial L}{\partial f_1} & \cdots  \frac{\partial L}{\partial f_n}
+\end{bmatrix}
+\begin{bmatrix}
+\frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_m} \\
+& \ddots &\\
+\frac{\partial f_n}{\partial x_1} & \cdots & \frac{\partial f_n}{\partial x_m}
+\end{bmatrix}
+$$
+
+$$
+=
+\frac{\partial L}{\partial f} 
+\frac{\partial f}{\partial \vec{x}}.
+$$
 
 ### Jacobians of common neural network operations
 
@@ -108,7 +147,7 @@ Now consider the linear transformation, the building block of the multi-layer pe
 
 $$\vec{z} = W\vec{x}+\vec{b}$$
 
-We will first consider $\partial{\vec{z}}/\partial{\vec{b}}$.  Clearly for each element $z_i$, the derivative with respect to $b_i$ is one and the derivative with respect to all other $b_j$ is zero.  So we simply have the identity matrix:
+We will first consider $\partial{\vec{z}}/\partial{\vec{b}}$.  Clearly for each element $z_i$, the derivative with respect to $b_i$ is one and the derivative with respect to all other elements of $\vec{b}$ is zero.  So we simply have the identity matrix:
 
 $$\frac{\partial{\vec{z}}}{\partial{\vec{b}}} = I.$$
 
@@ -138,43 +177,35 @@ $$
 \end{cases}
 $$
 
-where $W_j$ is the $j$-th row of $W$.  The Jacobian $\partial{\vec{z}}/\partial{W}$ therefore contains many zeros.
+where $W_j$ is the $j$-th row of $W$.
 
-If we are aiming to compute the Jacobian $\partial L/\partial W$ for the loss function $L(\vec{z})$, we see that the computation collapses nicely into a simple outer product of two vectors:
+If we are aiming to compute the Jacobian $\partial L/\partial W$ for the loss function $L(\vec{z})$, we see that the computation collapses nicely into an outer product of two vectors:
 
-$$\frac{\partial{L}}{\partial{W}} =
-\frac{\partial{L}}{\partial{\vec{z}}}
-\frac{\partial{\vec{z}}}{\partial{W}}
-=\sum_{i=1}^{m} 
+$$\frac{\partial{L}}{\partial{W_j}} =\sum_{i=1}^{m} 
 \frac{\partial{L}}{\partial{z_i}}
-\frac{\partial{z_i}}{W}$$
-
-$$=
-\begin{bmatrix}
-\frac{\partial{L}}{\partial{z_1}}
-\vec{x}^T \\
-~ \\
-~ \\
-\end{bmatrix}
-+ \cdots +
-\begin{bmatrix}
-~ \\
-~ \\
-\frac{\partial{L}}{\partial{z_m}}
-\vec{x}^T  \\
-\end{bmatrix}
+\frac{\partial{z_i}}{W_j}
+=\frac{\partial{L}}{\partial{z_j}}
+\frac{\partial{z_j}}{W_j}
+=\frac{\partial{L}}{\partial{z_j}}
+\vec{x}^T
 $$
 
-$$=\begin{bmatrix}
+
+$$
+\frac{\partial L}{\partial W}
+=\begin{bmatrix}
+\frac{\partial{L}}{\partial{W_1}} \\
+\vdots \\
+\frac{\partial{L}}{\partial{W_m}}
+\end{bmatrix}
+=\begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
 \vdots \\
 \frac{\partial{L}}{\partial{z_m}}
 \vec{x}^T
 \end{bmatrix}
-$$
-
-$$=\frac{\partial{L}}{\partial{\vec{z}}}^T\vec{x}^T.$$ 
+=\left(\frac{\partial{L}}{\partial{\vec{z}}}\right)^T\vec{x}^T.$$ 
 
 ### Backpropagation
 
