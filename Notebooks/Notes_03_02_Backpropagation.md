@@ -8,9 +8,9 @@ Given a function $f : \mathbb{R}^n : \mathbb{R}$ the **gradient** is the vector 
 
 $$\nabla_{\vec{x}} f(\vec{x}) = 
 \begin{bmatrix}
-\frac{\partial{f}}{\partial{\vec{x}_1}} \\
+\frac{\partial{f}}{\partial{x_1}} \\
 \vdots \\
-\frac{\partial{f}}{\partial{\vec{x}_n}} \\
+\frac{\partial{f}}{\partial{x_n}} \\
 \end{bmatrix}
 $$
 
@@ -18,9 +18,9 @@ If the function has a vector output, $g : \mathbb{R}^n : \mathbb{R}^m$, then we 
 
 $$J  =
 \begin{bmatrix}
-\frac{\partial{\vec{g}_1}}{\partial{\vec{x}_1}} & \cdots & \frac{\partial{\vec{g}_1}}{\partial{\vec{x}_n}} \\
+\frac{\partial{g_1}}{\partial{x_1}} & \cdots & \frac{\partial{g_1}}{\partial{x_n}} \\
 \vdots \\
-\frac{\partial{\vec{g}_m}}{\partial{\vec{x}_1}} & \cdots & \frac{\partial{\vec{g}_m}}{\partial{\vec{x}_n}} \\
+\frac{\partial{g_m}}{\partial{x_1}} & \cdots & \frac{\partial{g_m}}{\partial{x_n}} \\
 \end{bmatrix}
 $$
 
@@ -54,21 +54,21 @@ The ReLU activation function is written as follows:
 
 $$\textrm{ReLU}(x) = \min(0,x)$$
 
-Clearly $\partial{ReLU}/\partial x = 0$ when $x<0$, 1 when $x>0$.
+Clearly $\partial{\textrm{ReLU}}/\partial x = 0$ when $x<0$ and 1 when $x>0$.
 
 What about when $x=0$?  ReLU is not differentiable at this point.  However, we can employ a [subderivative](https://en.wikipedia.org/wiki/Subderivative) and say that the slope is 0 at $x=0$.  This choice allows gradient descent to function properly with convex but non-differentiable functions like ReLU.
 
 So in summary we have:
-$$\frac{\partial{ReLU}}{\partial x} = \begin{cases}
+$$\frac{\partial{\textrm{ReLU}}}{\partial x} = \begin{cases}
 0 && \textrm{if } x \leq 0 \\
 1 && \textrm{if } x > 0.
 \end{cases}
 $$
-Another way of writing this is $\partial{ReLU}/\partial{x}=[x>0].$
+Another way of writing this is $\partial{\textrm{ReLU}}/\partial{x}=[x>0].$
 
-When we apply the activation function to a vector, it is simply applied to each element in the same way.  Therefore the Jacobian is a diagonal matrix of ones and zeros:
+When we apply the activation function to a vector $\vec{x}$, so that we have $\vec{s}=\textrm{ReLU}(\vec{x})$, ReLU is simply applied to each element in the same way.  Therefore the Jacobian is a diagonal matrix of ones and zeros:
 
-$$\frac{\partial{ReLU}}{\partial \vec{x}} = 
+$$\frac{\partial{\vec{s}}}{\partial \vec{x}} = 
 \begin{bmatrix}
 [x_1>0] & & & \\
 & [x_2>0] & & \\
@@ -76,6 +76,31 @@ $$\frac{\partial{ReLU}}{\partial \vec{x}} =
 & & & [x_n>0]
 \end{bmatrix}
 $$
+
+Suppose we have already calculated $\partial{L}/\partial{\vec{s}}$ and we now want to calculate $\partial{L}/\partial{\vec{x}}$.  By the chain rule we have
+
+$$\frac{\partial{L}}{\partial{\vec{x}}}=
+\frac{\partial{L}}{\partial{\vec{s}}}
+\frac{\partial{\vec{s}}}{\partial{\vec{x}}}
+$$
+$$
+=\begin{bmatrix}
+\frac{\partial{L}}{\partial{s_1}} & \cdots  & \frac{\partial{L}}{\partial{s_n}}
+\end{bmatrix}
+\begin{bmatrix}
+[x_1>0] & & & \\
+& [x_2>0] & & \\
+& & \ddots & \\
+& & & [x_n>0]
+\end{bmatrix}
+$$
+$$
+=\begin{bmatrix}
+\frac{\partial{L}}{\partial{s_1}}[x_1>0] & \cdots  & \frac{\partial{L}}{\partial{s_n}}[x_n>0]
+\end{bmatrix}
+$$
+
+So we see that all we need to is zero out $\partial{L}/\partial{\vec{s}}$ wherever $\vec{x}\leq0$.
 
 #### Linear transformation
 
@@ -124,6 +149,22 @@ $$\frac{\partial{L}}{\partial{W}} =
 \frac{\partial{L}}{\partial{z_i}}
 \frac{\partial{z_i}}{W}$$
 
+$$=
+\begin{bmatrix}
+\frac{\partial{L}}{\partial{z_1}}
+\vec{x}^T \\
+~ \\
+~ \\
+\end{bmatrix}
++ \cdots +
+\begin{bmatrix}
+~ \\
+~ \\
+\frac{\partial{L}}{\partial{z_m}}
+\vec{x}^T  \\
+\end{bmatrix}
+$$
+
 $$=\begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
@@ -139,44 +180,43 @@ $$=\frac{\partial{L}}{\partial{\vec{z}}}^T\vec{x}^T.$$
 
 Consider a multi-layer perceptron with a single hidden layer with ReLU activation and a output layer size of 1.  Here is the step-by-step computation from input $\vec{x}$ to output $z$ and loss $L$:
 
-$$\vec{h} = W^1 \vec{x} + \vec{b}^1$$
+$$\vec{h} = W^{(1)} \vec{x} + \vec{b}^{(1)}$$
 $$\vec{s} = \textrm{ReLU}(\vec{h})$$
-$$z = W^2 \vec{s} + b^2$$
+$$z = W^{(2)} \vec{s} + b^{(2)}$$
 $$L = \frac{1}{2}(y-z)^2$$
 
 This is called the "forward" step as the computation flows forward from the input to the output and then the loss.
 
-Now we want to calculate the derivatives of the loss $L$ w.r.t. the weights $W_1,b_1,W_2,$ and $b_2$.  This is called the "backward" step as we need to calculate the derivatives starting from the loss and moving backward toward the input, applying the generalized chain rule as we go.
+Now we want to calculate the derivatives of the loss $L$ w.r.t. the weights $W^{(1)},\vec{b}^{(1)},W^{(2)},$ and $b^{(2)}$.  This is called the "backward" step as we need to calculate the derivatives starting from the loss and moving backward toward the input, applying the generalized chain rule as we go.
 
-For example, to calculate $\partial L/\partial W^2$ and $\partial L/\partial b^2$ we need to use the chain rule:
+For example, to calculate $\partial L/\partial W^{(2)}$ and $\partial L/\partial b^{(2)}$ we need to use the chain rule:
 
-$$\frac{dL}{W^2} = \frac{dL}{dz}\frac{dz}{dW^2}$$
-$$\frac{dL}{b^2} = \frac{dL}{dz}\frac{dz}{db^2}.$$
+$$\frac{\partial L}{W^{(2)}} = \frac{\partial L}{\partial z}\frac{\partial z}{\partial W^{(2)}}$$
+$$\frac{\partial L}{b^{(2)}} = \frac{\partial L}{\partial z}\frac{\partial z}{\partial b^{(2)}}.$$
 
 Note that we can compute $\partial L / \partial z$ once and reuse it for both computations.
 
 As we move backward, we can continue to update the loss gradient through the chain rule:
 
-$$\frac{\partial L}{\partial\vec{s}} = 
-\frac{dL}{dz}
-\frac{dz}{d\vec{s}}$$
+$$\frac{\partial L}{\partial \vec{s}} = 
+\frac{\partial L}{\partial z}
+\frac{\partial z}{\partial \vec{s}}$$
 
-$$\frac{dL}{\partial \vec{h}} = 
-\frac{dL}{d\vec{s}}
-\frac{d\vec{s}}{d\vec{h}}$$
+$$\frac{\partial L}{\partial \vec{h}} = 
+\frac{\partial L}{\partial \vec{s}}
+\frac{\partial \vec{s}}{\partial \vec{h}}$$
 
 
-Finally we arrive at the Jacobians for $W^1$ and $\vec{b}^1$:
+Finally we arrive at the Jacobians for $W^{(1)}$ and $\vec{b}^{(1)}$:
 
-$$\frac{\partial L}{\partial W^1} = 
+$$\frac{\partial L}{\partial W^{(1)}} = 
 \frac{\partial L}{\partial \vec{h}}
-\frac{\partial \vec{h}}{\partial W^1}
+\frac{\partial \vec{h}}{\partial W^{(1)}}
 $$
 
-$$\frac{\partial L}{\partial \vec{b}^1} = 
+$$\frac{\partial L}{\partial \vec{b}^{(1)}} = 
 \frac{\partial L}{\partial \vec{h}}
-\frac{\partial \vec{h}}{\partial  \vec{b}^1}
+\frac{\partial \vec{h}}{\partial  \vec{b}^{(1)}}
 $$
 
-
-
+As explained above, in practice some of these computations are not implemented as matrix multiplications but instead performed in a more efficient manner, depending on the function being differentiated.
