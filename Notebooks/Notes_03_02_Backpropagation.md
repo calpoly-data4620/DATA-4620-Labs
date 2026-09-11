@@ -124,18 +124,16 @@ $$\frac{\partial{L}}{\partial{W}} =
 \frac{\partial{L}}{\partial{z_i}}
 \frac{\partial{z_i}}{W}$$
 
-$$=
-\begin{bmatrix}
+$$=\begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
 \vdots \\
 \frac{\partial{L}}{\partial{z_m}}
-\vec{x}^T \\
+\vec{x}^T
 \end{bmatrix}
-=
-\frac{\partial{L}}{\partial{\vec{z}}}^T
-\vec{x}^T.
-$$ 
+$$
+
+$$=\frac{\partial{L}}{\partial{\vec{z}}}^T\vec{x}^T.$$ 
 
 ### Backpropagation
 
