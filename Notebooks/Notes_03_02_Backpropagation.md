@@ -124,8 +124,7 @@ $$\frac{\partial{L}}{\partial{W}} =
 \frac{\partial{L}}{\partial{z_i}}
 \frac{\partial{z_i}}{W}$$
 
-$$
-=
+$$=
 \begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
