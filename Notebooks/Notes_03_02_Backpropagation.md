@@ -179,17 +179,23 @@ $$
 
 where $W_j$ is the $j$-th row of $W$.
 
-If we are aiming to compute the Jacobian $\partial L/\partial W$ for the loss function $L(\vec{z})$, we see that the computation collapses nicely into an outer product of two vectors:
+If we are aiming to compute the Jacobian $\partial L/\partial W$ for the loss function $L(\vec{z})$, we see that the computation collapses nicely into an outer product of two vectors. First looking at the Jacobian w.r.t $W_j$:
 
 $$\frac{\partial{L}}{\partial{W_j}} =\sum_{i=1}^{m} 
 \frac{\partial{L}}{\partial{z_i}}
-\frac{\partial{z_i}}{W_j}
+\frac{\partial{z_i}}{W_j}$$
+
+$$
 =\frac{\partial{L}}{\partial{z_j}}
 \frac{\partial{z_j}}{W_j}
-=\frac{\partial{L}}{\partial{z_j}}
-\vec{x}^T
 $$
 
+$$
+=\frac{\partial{L}}{\partial{z_j}}
+\vec{x}^T.
+$$
+
+Now we put the rows together to form $\frac{\partial L}{\partial W}$:
 
 $$
 \frac{\partial L}{\partial W}
@@ -197,15 +203,18 @@ $$
 \frac{\partial{L}}{\partial{W_1}} \\
 \vdots \\
 \frac{\partial{L}}{\partial{W_m}}
-\end{bmatrix}
+\end{bmatrix}$$
+
+$$
 =\begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
 \vdots \\
 \frac{\partial{L}}{\partial{z_m}}
 \vec{x}^T
-\end{bmatrix}
-=\left(\frac{\partial{L}}{\partial{\vec{z}}}\right)^T\vec{x}^T.$$ 
+\end{bmatrix}$$
+
+$$=\left(\frac{\partial{L}}{\partial{\vec{z}}}\right)^T\vec{x}^T.$$ 
 
 ### Backpropagation
 
