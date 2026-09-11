@@ -241,4 +241,4 @@ $$\frac{\partial L}{\partial \vec{b}^{(1)}} =
 \frac{\partial \vec{h}}{\partial  \vec{b}^{(1)}}
 $$
 
-As explained above, in practice some of these computations are not implemented as matrix multiplications but instead performed in a more efficient manner, depending on the function being differentiated.
+As explained above, in practice some of these computations are not implemented by constructing and multiplying the full Jacobian matrices, but instead performed in a more efficient manner depending on the sparsity pattern of the Jacobian.
