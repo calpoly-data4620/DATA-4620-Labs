@@ -123,6 +123,7 @@ $$\frac{\partial{L}}{\partial{W}} =
 =\sum_{i=1}^{m} 
 \frac{\partial{L}}{\partial{z_i}}
 \frac{\partial{z_i}}{W}$$
+
 $$
 =
 \begin{bmatrix}
