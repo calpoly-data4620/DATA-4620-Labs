@@ -40,7 +40,6 @@ When $\vec{x}$ is a $n \times 1$ vector, we have
 
 $$L = L(f_1(\vec{x}),f_2(\vec{x}),\ldots,f_m(\vec{x}))$$
 
-
 $$\frac{\partial L}{\partial x_j} = \sum_{i=1}^m \frac{\partial L}{\partial f_i}\frac{\partial f_i}{\partial x_j}$$
 
 $$=
@@ -52,17 +51,14 @@ $$=
 \end{bmatrix}
 $$
 
-$$
-=
-\frac{\partial L}{\partial f} 
+$$=\frac{\partial L}{\partial f} 
 \frac{\partial f}{\partial x_j}.
 $$
 
 Now we see that we can write the entire outer Jacobian matrix calculation as a multiplication of the inner Jacobians which implements the generalized chain rule:
 
 $$\frac{\partial L}{\partial \vec{x}} 
-= 
-\begin{bmatrix}
+= \begin{bmatrix}
 \frac{\partial L}{\partial f_1} & \cdots  \frac{\partial L}{\partial f_n}
 \end{bmatrix}
 \begin{bmatrix}
@@ -72,8 +68,7 @@ $$\frac{\partial L}{\partial \vec{x}}
 \end{bmatrix}
 $$
 
-$$
-=
+$$=
 \frac{\partial L}{\partial f} 
 \frac{\partial f}{\partial \vec{x}}.
 $$
@@ -98,11 +93,13 @@ Clearly $\partial{\textrm{ReLU}}/\partial x = 0$ when $x<0$ and 1 when $x>0$.
 What about when $x=0$?  ReLU is not differentiable at this point.  However, we can employ a [subderivative](https://en.wikipedia.org/wiki/Subderivative) and say that the slope is 0 at $x=0$.  This choice allows gradient descent to function properly with convex but non-differentiable functions like ReLU.
 
 So in summary we have:
+
 $$\frac{\partial{\textrm{ReLU}}}{\partial x} = \begin{cases}
 0 && \textrm{if } x \leq 0 \\
 1 && \textrm{if } x > 0.
 \end{cases}
 $$
+
 Another way of writing this is $\partial{\textrm{ReLU}}/\partial{x}=[x>0].$
 
 When we apply the activation function to a vector $\vec{x}$, so that we have $\vec{s}=\textrm{ReLU}(\vec{x})$, ReLU is simply applied to each element in the same way.  Therefore the Jacobian is a diagonal matrix of ones and zeros:
@@ -183,14 +180,9 @@ If we are aiming to compute the Jacobian $\partial L/\partial W$ for the loss fu
 
 $$\frac{\partial{L}}{\partial{W_j}} =\sum_{i=1}^{m} 
 \frac{\partial{L}}{\partial{z_i}}
-\frac{\partial{z_i}}{W_j}$$
-
-$$
+\frac{\partial{z_i}}{W_j}
 =\frac{\partial{L}}{\partial{z_j}}
 \frac{\partial{z_j}}{W_j}
-$$
-
-$$
 =\frac{\partial{L}}{\partial{z_j}}
 \vec{x}^T.
 $$
@@ -203,9 +195,7 @@ $$
 \frac{\partial{L}}{\partial{W_1}} \\
 \vdots \\
 \frac{\partial{L}}{\partial{W_m}}
-\end{bmatrix}$$
-
-$$
+\end{bmatrix}
 =\begin{bmatrix}
 \frac{\partial{L}}{\partial{z_1}}
 \vec{x}^T \\
