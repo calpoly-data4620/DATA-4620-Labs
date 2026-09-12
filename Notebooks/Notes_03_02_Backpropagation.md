@@ -19,7 +19,7 @@ To calculate these derivatives, we first need to understand the concepts of the 
 
 ### Jacobian matrix
 
-Given a function $g : \mathbb{R}^n : \mathbb{R}^m$ we the $m \times n$ matrix $J$ of all partial derivatives is called the **Jacobian**:
+Consider a function $g : \mathbb{R}^n : \mathbb{R}^m$.  We will write $g_i(\vec{x})$ to mean the $i$-th element of $g(\vec{x})$ and $x_j$ to mean the $j$-th element of $\vec{x}$.   The $m \times n$ matrix $J$ of all partial derivatives of $g(\vec{x})$ is called the **Jacobian**:
 
 $$J  =
 \begin{bmatrix}
@@ -31,11 +31,11 @@ $$
 
 Note that the Jacobian matrix has size $m \times n$ where $m$ is the number of outputs and $n$ is the number of inputs.  The rows of the Jacobian correspond to the outputs, and the columns correspond to the inputs.
 
-As a shorthand, I will indicate the Jacobian using the partial derivative notation, so that if $\vec{y}=g(\vec{x})$ then the Jacobian is $\partial{\vec{y}}/\partial{\vec{x}}$.
+As a shorthand, I will indicate the Jacobian using the partial derivative notation, so that the Jacobian of $g(\vec{x})$ is $\partial{g}/\partial{\vec{x}}$.
 
 ### Generalized chain rule 
 
-The generalized chain rule applies when computing partial derivatives of a function with a vector input and output.  Consider a function $f : \mathbb{R}^m \rightarrow \mathbb{R}$, function $g : \mathbb{R}^n \rightarrow \mathbb{R}^m$, and input vector $\vec{x}$ of size $n \times 1$.  We will write $g_i$ to mean the $i$-th element of $g(\vec{x})$.  The generalized chain rules states:
+The generalized chain rule applies when computing partial derivatives of a function with a vector input and output.  Consider a function $f : \mathbb{R}^m \rightarrow \mathbb{R}$, function $g : \mathbb{R}^n \rightarrow \mathbb{R}^m$, and input vector $\vec{x}$ of size $n \times 1$.  The generalized chain rules states that:
 
 $$\frac{\partial f}{\partial x_j} = \sum_{i=1}^m \frac{\partial f}{\partial g_i}\frac{\partial g_i}{\partial x_j}$$
 
@@ -76,7 +76,7 @@ $$=
 \frac{\partial g}{\partial \vec{x}}.
 $$
 
-### Jacobians of common neural network operations
+### Derivatives of common neural network operations
 
 #### Loss function
 
@@ -93,7 +93,7 @@ $$\textrm{ReLU}(x) = \min(0,x)$$
 
 Clearly $\partial{\textrm{ReLU}}/\partial x = 0$ when $x<0$ and 1 when $x>0$.
 
-What about when $x=0$?  ReLU is not differentiable at this point, but we can simply choose the slope to be zero.  (See [Deep Learning $\S$6.3](https://www.deeplearningbook.org/contents/mlp.html) for more discussion on this point.). In summary we have:
+What about when $x=0$?  ReLU is not differentiable at this point, but we can simply choose the slope to be zero (or one).  (See [Deep Learning $\S$6.3](https://www.deeplearningbook.org/contents/mlp.html) for more discussion on this point.). In summary we have:
 
 $$\frac{\partial{\textrm{ReLU}}}{\partial x} = \begin{cases}
 0 && \textrm{if } x \leq 0 \\
@@ -103,7 +103,7 @@ $$
 
 Another way of writing this is $\partial{\textrm{ReLU}}/\partial{x}=[x>0].$
 
-When we apply the activation function to a vector $\vec{x}$, so that we have $\vec{s}=\textrm{ReLU}(\vec{x})$, ReLU is simply applied to each element in the same way.  Therefore the Jacobian is a diagonal matrix of ones and zeros:
+When we apply the activation function to a vector $\vec{x}$, so that we have $\vec{s}=\textrm{ReLU}(\vec{x})$, ReLU is simply applied to each element in the same way: $s_i =\textrm{ReLU}(x_i)$ for $i=1,\ldots,n$.  Therefore the Jacobian is a diagonal matrix of ones and zeros:
 
 $$\frac{\partial{\vec{s}}}{\partial \vec{x}} = 
 \begin{bmatrix}
