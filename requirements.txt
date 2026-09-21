@@ -10,3 +10,5 @@ ipykernel
 palmerpenguins
 mlxtend
 ucimlrepo
+torchmetrics
+lightning
